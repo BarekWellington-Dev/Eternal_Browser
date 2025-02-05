@@ -1,0 +1,6 @@
+@echo off
+title Iniciando Tor y main.js...
+cd /d "C:\Users\maxim\Downloads\Tor Browser\Browser\TorBrowser\Tor"
+start tor.exe
+echo Tor se está ejecutando...
+exit

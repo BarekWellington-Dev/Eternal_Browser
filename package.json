@@ -1,0 +1,29 @@
+{
+  "name": "Eternal Browser ",
+  "version": "1.2.0",
+  "description": "Eternal Browser",
+  "publisher": "Eternal Co",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^27.3.11",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.tuapp.eternal-browser",
+    "win": {
+      "target": "nsis"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "tu-usuario",
+      "repo": "eternal-browser"
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  }
+}

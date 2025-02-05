@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Resultados de Búsqueda</h1>
+        <form action="/search-results.html" method="get">
+            <input type="text" name="q" id="search-box" placeholder="Buscar..." value="{{ request.args.get('q', '') }}">
+            <button type="submit">🔍</button>
+        </form>
+    </header>
+    
+    <main>
+        <div class="search-results-container">
+            <p id="search-query"></p>
+            <ul id="search-results"></ul>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get("q") || "";
+            document.getElementById("search-query").textContent = `Resultados para: "${query}"`;
+
+            // Hacer la solicitud al backend Flask
+            fetch(`/search?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsContainer = document.getElementById("search-results");
+                    resultsContainer.innerHTML = "";
+
+                    if (data.length === 0) {
+                        resultsContainer.innerHTML = "<li>No se encontraron resultados.</li>";
+                    } else {
+                        data.forEach(result => {
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = `
+                                <h2><a href="${result.link}" target="_blank">${result.title}</a></h2>
+                                <p>${result.description}</p>
+                                <span class="result-link">${result.link}</span>
+                            `;
+                            resultsContainer.appendChild(listItem);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener resultados:', error);
+                });
+        });
+    </script>
+</body>
+</html>

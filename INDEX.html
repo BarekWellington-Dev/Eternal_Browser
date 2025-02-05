@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eternal Browser - Inicio</title>
+  <!-- Referencia al archivo CSS externo -->
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Variable para almacenar el modo seleccionado: 'web' o 'tor'
+    let selectedMode = 'web'; // Por defecto
+
+    // Función para inicializar la interfaz a partir de los parámetros de la URL
+    function initializeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      // Leer el parámetro "mode", si existe; por defecto 'web'
+      const modeParam = params.get("mode") || "web";
+      selectedMode = modeParam;
+      
+      // Establecer la clase del body y el texto del botón de búsqueda según el modo
+      if (selectedMode === "tor") {
+        document.body.classList.remove("normal");
+        document.body.classList.add("safe-search");
+        document.getElementById("search-button").textContent = "🔍 Buscar en Tor";
+        document.getElementById("mode-toggle").textContent = "🔓 Desactivar Modo Tor";
+      } else {
+        document.body.classList.remove("safe-search");
+        document.body.classList.add("normal");
+        document.getElementById("search-button").textContent = "🔍 Buscar Normal";
+        document.getElementById("mode-toggle").textContent = "🔒 Activar Modo Tor";
+      }
+      
+      // Leer el término de búsqueda de la URL y colocarlo en el input
+      const queryParam = params.get("q") || "";
+      document.getElementById("search").value = queryParam;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById("search");
+      const searchButton = document.getElementById("search-button");
+      const modeToggle = document.getElementById("mode-toggle");
+
+      // Inicializar la interfaz según la URL
+      initializeFromURL();
+
+      // Alternar entre modo Web y Tor al hacer clic en el botón de modo
+      modeToggle.addEventListener("click", () => {
+        if (selectedMode === "web") {
+          selectedMode = "tor";
+          document.body.classList.remove("normal");
+          document.body.classList.add("safe-search");
+          modeToggle.textContent = "🔓 Desactivar Modo Tor";
+          searchButton.textContent = "🔍 Buscar en Tor";
+          // Cambiar el placeholder (opcional)
+          searchInput.placeholder = "Buscar en la red Tor...";
+        } else {
+          selectedMode = "web";
+          document.body.classList.remove("safe-search");
+          document.body.classList.add("normal");
+          modeToggle.textContent = "🔒 Activar Modo Tor";
+          searchButton.textContent = "🔍 Buscar Normal";
+          searchInput.placeholder = "Buscar en la Web...";
+        }
+      });
+
+      // Función para redirigir a search-results.html con el término de búsqueda y el modo
+      function redirectToResultsPage() {
+        const query = searchInput.value.trim();
+        if (query !== "") {
+          const resultsURL = `search-results.html?q=${encodeURIComponent(query)}&mode=${selectedMode}`;
+          window.location.href = resultsURL;
+        }
+      }
+
+      // Ejecutar búsqueda al presionar "Enter" en el input
+      searchInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          redirectToResultsPage();
+        }
+      });
+
+      // Ejecutar búsqueda al hacer clic en el botón de búsqueda
+      searchButton.addEventListener("click", redirectToResultsPage);
+    });
+  </script>
+  <style>
+    /* Aquí puedes agregar estilos específicos para INDEX.html si deseas (o usa los mismos de styles.css) */
+  </style>
+</head>
+<body class="normal">
+  <div class="container">
+    <h1>Eternal Browser</h1>
+    <p>Tu buscador privado y seguro</p>
+    <!-- Botón para alternar el modo -->
+    <button id="mode-toggle">🔒 Activar Modo Tor</button>
+    <!-- Barra de búsqueda -->
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Buscar en la Web...">
+      <button id="search-button">🔍 Buscar Normal</button>
+    </div>
+  </div>
+</body>
+</html>
